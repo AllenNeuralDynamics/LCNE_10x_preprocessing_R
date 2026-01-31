@@ -23,29 +23,31 @@ RUN apt-get update && apt-get install -y \
     locales \
     --no-install-recommends \
  && locale-gen en_US.UTF-8 \
- && update-locale LANG=en_US.UTF-8
+ && update-locale LANG=en_US.UTF-8 \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 # Set the locale environment variables
 ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
 
-# Add the CRAN repository and GPG key for R
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 \
- && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
+#RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org/')"
+#RUN R -e "install.packages('renv', repos='https://cloud.r-project.org/')"
+#COPY renv.lock /code/
+#WORKDIR /code
+#RUN R -e "renv::restore()"
 
-# Update the package index and install R
-RUN apt-get update && apt-get install -y \
-    r-base \
-    r-base-dev \
-    --no-install-recommends \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
 
 # Optional: Install common R packages used in data science
-RUN R -e "install.packages(c('tidyverse', 'data.table', 'shiny', 'rmarkdown', 'ggplot2', 'dplyr'), repos='https://cloud.r-project.org/')"
+RUN R -q -e "install.packages(c('tidyverse', 'data.table', 'shiny', 'rmarkdown', 'ggplot2', 'dplyr'), repos='https://cloud.r-project.org/')"
+RUN R -q -e "install.packages('remotes', repos='https://cloud.r-project.org/')" \
+ && R -q -e "remotes::install_version('harmony',      version = '1.2.3', repos = 'https://cran.r-project.org')" \
+ && R -q -e "remotes::install_version('Seurat',       version = '5.4.0', repos = 'https://cran.r-project.org')" \
+ && R -q -e "remotes::install_version('SeuratObject', version = '5.3.0', repos = 'https://cran.r-project.org')"
+
 
 # Set the working directory
 WORKDIR /workspace
 
 # Define the command to run R interactively
-CMD ["R"]
+CMD [\"R\"]
