@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# LCNE 10x snRNA-seq Preprocessing Pipeline
+# Sequential execution of R scripts for LC-NE cell identification and analysis
+
+echo "=== LCNE 10x Preprocessing Pipeline ==="
+echo "Started at $(date)"
+echo ""
+
+# Validate required data assets
+if [[ ! -d "/data/LCNE_10x" ]]; then
+  echo "ERROR: Required data asset 'LCNE_10x' not found at /data/LCNE_10x" >&2
+  exit 1
+fi
+
+if [[ ! -d "/data/LCv2" ]]; then
+  echo "ERROR: Required data asset 'LCv2' not found at /data/LCv2" >&2
+  exit 1
+fi
+
+echo "✓ Data assets verified"
+echo ""
+
+# Create output directories
+mkdir -p /results/figures /results/objects /scratch
+
+# Change to code directory
+cd /code
+
+# Disable renv for reproducible runs (packages installed globally in Dockerfile)
+if [[ -f .Rprofile ]]; then
+  mv .Rprofile .Rprofile.disabled
+fi
+
+# Step 1: Build full Seurat object with QC and batch correction
+echo "[1/5] Building full Seurat object with Harmony batch correction..."
+Rscript --vanilla 01_build_full_object.R
+echo "✓ Step 1 complete: LC_clustered_harmony.rds saved"
+echo ""
+
+# Step 2: Define LC population from clusters
+echo "[2/5] Defining LC-NE population from clusters..."
+Rscript --vanilla 02_define_LC_population.R
+echo "✓ Step 2 complete: LC population identified"
+echo ""
+
+# Step 3: LC subclustering and outlier removal
+echo "[3/5] LC subclustering and outlier removal..."
+Rscript --vanilla 03_LC_subclustering.R
+echo "✓ Step 3 complete: LC cells refined"
+echo ""
+
+# Step 4: Generate publication figures
+echo "[4/5] Generating publication figures..."
+Rscript --vanilla 02_b_publication_fig.R
+echo "✓ Step 4 complete: Figures saved to /results/figures"
+echo ""
+
+# Step 5: Export to h5ad format for Python analysis
+echo "[5/5] Exporting LC subset to h5ad format..."
+Rscript --vanilla 04_export_LC_to_h5ad.R
+echo "✓ Step 5 complete: H5AD file saved"
+echo ""
+
+# Restore .Rprofile for Cloud Workstation compatibility
+if [[ -f .Rprofile.disabled ]]; then
+  mv .Rprofile.disabled .Rprofile
+fi
+
+echo "=== Pipeline Complete ==="
+echo "Finished at $(date)"
+echo ""
+echo "Output files written to /results/"
+ls -lh /results/ 2>/dev/null || echo "(No result files found)"

@@ -4,65 +4,6 @@ library(harmony)
 library(dplyr)
 library(ggplot2)
 
-
-
-## test only 
-plot_mt_histogram <- function(data_file, metadata_file, sample_name,
-                              verbose = TRUE) {
-  
-  temp_env <- new.env()
-  load(data_file, envir = temp_env)
-  load(metadata_file, envir = temp_env)
-  
-  mat <- temp_env$mat
-  samp.dat <- temp_env$samp.dat
-  
-  if (!"studies" %in% colnames(samp.dat)) {
-    stop("Missing 'studies' column in metadata.")
-  }
-  
-  samp.dat <- samp.dat[samp.dat$studies == "Neuromodulatory_Noradrenergic", ]
-  mat <- mat[, colnames(mat) %in% samp.dat$sample_id]
-  
-  if (ncol(mat) != nrow(samp.dat)) {
-    stop("Counts matrix and metadata mismatch.")
-  }
-  
-  if (verbose) {
-    message("Cells after study filter: ", ncol(mat))
-  }
-  
-  seurat_object <- CreateSeuratObject(
-    counts = mat,
-    meta.data = samp.dat,
-    project = sample_name,
-    min.cells = 3,
-    min.features = 200
-  )
-  
-  if (verbose) {
-    message("Cells after CreateSeuratObject: ", ncol(seurat_object))
-  }
-  
-  rm(mat, samp.dat, temp_env); gc()
-  
-  # compute QC metrics
-  seurat_object$percent.mt <- PercentageFeatureSet(seurat_object, pattern = "^mt-")
-  seurat_object$percent.mt <- as.numeric(seurat_object$percent.mt)
-  
-  # plot histogram
-  hist(seurat_object$percent.mt,
-       breaks = 50,
-       col = "gray",
-       main = paste0(sample_name, " percent.mt (before QC)"),
-       xlab = "percent.mt")
-  
-  # optional: return object for further use
-  return(seurat_object)
-}
-
-plot_mt_histogram(file_loc,metafile_loc,"Sample3") + scale_y_log10()
-
 # ------------------------------------------------------------------------------
 # load and fiter 
 # ------------------------------------------------------------------------------

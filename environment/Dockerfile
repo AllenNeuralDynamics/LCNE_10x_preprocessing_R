@@ -3,9 +3,11 @@ FROM $REGISTRY_HOST/codeocean/py-r:python3.12.4-R4.4.2-1.2204.0-JupyterLab4.3.0-
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+
 ARG GIT_ASKPASS
 ARG GIT_ACCESS_TOKEN
-COPY git-askpass /
+COPY git-ask-pass /
+
 
 ARG RCACHE_OPTIONS
 RUN echo $RCACHE_OPTIONS >> $(Rscript -e 'cat(R.home())')/etc/Rprofile.site
@@ -35,6 +37,7 @@ ENV LANG=en_US.UTF-8 \
 
 RUN R -q -e "install.packages(c('tidyverse', 'data.table', 'shiny', 'rmarkdown', 'ggplot2', 'dplyr'), repos='https://cloud.r-project.org/')"
 RUN R -q -e "install.packages('remotes', repos='https://cloud.r-project.org/')" \
+ && R -q -e "remotes::install_version('plotly',      version = '4.12.0', repos = 'https://cran.r-project.org')" \
  && R -q -e "remotes::install_version('harmony',      version = '1.2.3', repos = 'https://cran.r-project.org')" \
  && R -q -e "remotes::install_version('Seurat',       version = '5.4.0', repos = 'https://cran.r-project.org')" \
  && R -q -e "remotes::install_version('SeuratObject', version = '5.3.0', repos = 'https://cran.r-project.org')"

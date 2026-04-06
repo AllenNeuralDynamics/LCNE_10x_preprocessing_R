@@ -1,7 +1,7 @@
 # Select LC clusters from integrated object and save subset
 
 input_file  <- "../scratch/LC_clustered_harmony.rds"
-output_file <- "../scratch/LC_cluster_interest_1.rds"
+output_file <- "../scratch/LC_cluster_interest.rds"
 
 # LC defined based on marker expression (see 01_integration_and_LC_selection.Rmd)
 lc_clusters_final <- c(9)   # 5151 samples will be selected
