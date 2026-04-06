@@ -31,20 +31,20 @@ RUN apt-get update && apt-get install -y \
 ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
 
-#RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org/')"
-#RUN R -e "install.packages('renv', repos='https://cloud.r-project.org/')"
-#COPY renv.lock /code/
-#WORKDIR /code
-#RUN R -e "renv::restore()"
 
 
-# Optional: Install common R packages used in data science
 RUN R -q -e "install.packages(c('tidyverse', 'data.table', 'shiny', 'rmarkdown', 'ggplot2', 'dplyr'), repos='https://cloud.r-project.org/')"
 RUN R -q -e "install.packages('remotes', repos='https://cloud.r-project.org/')" \
  && R -q -e "remotes::install_version('harmony',      version = '1.2.3', repos = 'https://cran.r-project.org')" \
  && R -q -e "remotes::install_version('Seurat',       version = '5.4.0', repos = 'https://cran.r-project.org')" \
  && R -q -e "remotes::install_version('SeuratObject', version = '5.3.0', repos = 'https://cran.r-project.org')"
 
+
+
+
+RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org/')"
+RUN R -e "remotes::install_version('SingleCellExperiment', version = '1.28.1', repos = BiocManager::repositories())"
+RUN R -e "remotes::install_version('zellkonverter', version = '1.16.0', repos = BiocManager::repositories())"
 
 # Set the working directory
 WORKDIR /workspace

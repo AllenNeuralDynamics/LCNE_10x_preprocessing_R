@@ -1,0 +1,74 @@
+---
+title: "02_LC_subclusters_QC"
+output: html_document
+date: "2026-02-03"
+---
+
+```{r setup, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.width = 6,
+  fig.height = 5
+)
+
+library(Seurat)
+library(harmony)
+library(ggplot2)
+library(dplyr)
+
+source("../code/func/integration_functions.R")
+```
+
+# load the object that was produced by `03_LC_subclustering.R` 
+
+```{r load-data, message=FALSE, echo = FALSE, warning=FALSE}
+combined_lc <- readRDS("../scratch/LC_cluster_interest_1.rds")
+
+combined_lc <- NormalizeData(combined_lc)
+combined_lc <- FindVariableFeatures(combined_lc, nfeatures = 2000)
+combined_lc <- ScaleData(combined_lc)
+
+combined_lc <- RunPCA(combined_lc, npcs = 30)
+combined_lc <- RunUMAP(combined_lc, dims = 1:10, return.model = TRUE)
+
+combined_lc <- FindNeighbors(combined_lc, dims = 1:10)
+combined_lc <- FindClusters(combined_lc, resolution = 0.4)
+
+```
+
+### 2.2. Load final LC object
+```{r load-data-2}
+combined_lc_filtered <- readRDS("../scratch/LC_subclusters_filtered.rds")
+```
+
+
+# 2.3. Show LC subcluster structure
+
+```{r umap-subclusters, fig.width=7, fig.height=6}
+
+DimPlot(combined_lc, reduction = "umap",
+        group.by = "seurat_clusters", label = TRUE, repel = TRUE) +
+  ggtitle("LC subclusters (filtered)")
+
+DimPlot(
+  combined_lc_filtered,
+  reduction = "umap",
+  group.by  = "seurat_clusters",
+  label     = TRUE,
+  repel     = TRUE
+) + NoLegend()
+```
+
+
+```{r}
+
+# Inspect subclusters
+DimPlot(combined_lc, reduction = "umap", group.by = "seurat_clusters",
+        label = TRUE, repel = TRUE, pt.size = 0.5) +
+  ggtitle("LC population: subclusters")
+# 
+# VlnPlot(combined_lc, features = c("nCount_RNA", "nFeature_RNA", "percent.mt"),
+#         group.by = "seurat_clusters", pt.size = 0.2, ncol = 3)
+
+```
+
