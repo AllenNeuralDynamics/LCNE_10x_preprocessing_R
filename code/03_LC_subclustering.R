@@ -1,4 +1,4 @@
-input_file = "../scratch/LC_cluster_interest_1.rds"  # 5151 cells to start with 
+input_file = "../scratch/LC_cluster_interest.rds"  # 5151 cells to start with 
 output_file <- "../scratch/LC_subclusters_filtered.rds"
 
 library(Seurat)
