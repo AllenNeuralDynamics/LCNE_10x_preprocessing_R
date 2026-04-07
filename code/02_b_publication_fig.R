@@ -45,6 +45,12 @@ save_pub <- function(p, filename_base, w, h, outdir = "../figures") {
 
 
 
+
+input_file = "../scratch/LC_cluster_interest.rds"  # 5151 cells to start with 
+combined_lc <- readRDS(input_file)
+
+
+
 ## some QC Plot
 combined_lc$percent.mt <- as.numeric(as.character(combined_lc$percent.mt))
 hist(combined_lc$percent.mt,
