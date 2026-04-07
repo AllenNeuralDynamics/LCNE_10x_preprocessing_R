@@ -1,2 +1,6 @@
 metadata_version: 1
 name: LCNE_10x_preprocessing_R
+description: 10x snRNA-seq preprocessing for locus coeruleus norepinephrine neuron
+  identification using Seurat 5 and Harmony batch correction.
+authors:
+- name: shuonan chen
