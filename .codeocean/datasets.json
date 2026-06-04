@@ -2,6 +2,10 @@
 	"version": 1,
 	"attached_datasets": [
 		{
+			"id": "5c8bdfbd-3000-4e18-8b98-dcf430239f6c",
+			"mount": "LCNE_smartseq_raw_NeMO"
+		},
+		{
 			"id": "784a0ced-f6cc-4904-9619-4e223aec631d",
 			"mount": "LCNE_10x"
 		},

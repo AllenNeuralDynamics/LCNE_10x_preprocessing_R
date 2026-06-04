@@ -27,7 +27,7 @@ source("../code/func/integration_functions.R")
 
 ## load the data that is generated from 01 script (`./code/01_build_full_object.R`). 
 ```{r load-data}
-combined <- readRDS("../scratch/LC_clustered_harmony_1.rds")
+combined <- readRDS("../scratch/LC_clustered_harmony.rds")
 ```
 
 ## Cluster structure after integration on UMAP
@@ -55,7 +55,7 @@ DotPlot(
 
 ```
 
-seems cluster 9 adn maybe 26/35 is the target. 
+seems cluster 9 and maybe 26/35 is the target. 
 
 ```{r}
 # 1) compute average expression per cluster (defaults to assay="RNA", slot="data" so using log CP10k)
@@ -88,7 +88,7 @@ DimPlot(
   reduction = "umap",
   group.by   = "seurat_clusters",
   cells      = WhichCells(combined, idents = lc_candidate_clusters),
-  label      = TRUE)
+  label      = TRUE)+ coord_equal()
 lc_cells <- WhichCells(combined, idents = lc_candidate_clusters)
 ```
 

@@ -2,7 +2,7 @@
 
 **Locus Coeruleus Norepinephrine (LC-NE) Cell Identification and Analysis**
 
-This capsule performs sequential preprocessing of 10x Genomics single-nucleus RNA-seq data to identify, filter, and characterize locus coeruleus norepinephrine (LC-NE) neurons using Seurat 5 and Harmony batch correction.
+This capsule performs sequential preprocessing of 10x Genomics single-nucleus RNA-seq data to identify, filter, and characterize locus coeruleus norepinephrine (LC-NE) neurons using Seurat 5 and Harmony batch correction. The pipeline also includes retro-seq data conversion for cross-modality integration.
 
 ## Overview
 
@@ -12,8 +12,18 @@ The pipeline implements a multi-stage workflow:
 3. LC-specific subclustering and outlier removal
 4. Publication-quality visualization
 5. Export to AnnData (h5ad) format for Python workflows
+6. Retro-seq data conversion for cross-modality integration
 
 ## Input Data
+
+### Downloading the Data
+
+Before running this capsule, you will need to download the required datasets and attach them as data assets.
+
+**Retro-seq data:**
+> Download link: *(to be filled)*
+
+Once downloaded, attach each dataset to this capsule via **Capsule Settings → Data Assets → Add Data Asset**, and ensure the mount names match those listed in the section below.
 
 ### Required Data Assets
 
@@ -85,6 +95,16 @@ Expected file structure:
 
 **Output:** `LC_subset.h5ad` for scanpy/Python analysis
 
+### Script 6: Retro-seq Conversion (`05_retroseeq_convert.r`)
+**Purpose:** Convert and integrate retro-seq data for cross-modality analysis
+
+**Steps:**
+- Load retro-seq input data
+- Reformat and align to LC-NE dataset conventions
+- Export converted output for downstream integration
+
+**Output:** Converted retro-seq data saved to `/results/`
+
 ## Key Parameters
 
 **Quality Control:**
@@ -147,7 +167,7 @@ Execute the full pipeline via the `/code/run` script:
 bash /code/run
 ```
 
-The pipeline runs all 5 scripts sequentially with validation checks between steps.
+The pipeline runs all 6 scripts sequentially with validation checks between steps.
 
 ### Interactive (Cloud Workstation)
 Run scripts individually in R console or RStudio:
@@ -157,6 +177,7 @@ source("code/02_define_LC_population.R")
 source("code/03_LC_subclustering.R")
 source("code/02_b_publication_fig.R")
 source("code/04_export_LC_to_h5ad.R")
+source("code/05_retroseeq_convert.r")
 ```
 
 **Note:** Scripts must be run in order, as each depends on outputs from previous steps.

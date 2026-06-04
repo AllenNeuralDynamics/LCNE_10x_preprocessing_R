@@ -1,46 +1,38 @@
-
 library(Seurat)
 library(harmony)
 library(dplyr)
 library(ggplot2)
 
 # ------------------------------------------------------------------------------
-# load and fiter 
+# QC, normalize, HVG
 # ------------------------------------------------------------------------------
 
-
-load_and_create_seurat <- function(data_file, metadata_file, sample_name, 
-                                   min_genes = 2000, max_genes = 15000, 
-                                   max_mt_pct = 4, max_rb_pct = 4, 
+load_and_create_seurat <- function(seurat_object, sample_name,
+                                   min_genes = 2000, max_genes = 15000,
+                                   max_mt_pct = 4, max_rb_pct = 4,
                                    doublet_scores_col = "doublet_score",
                                    verbose = TRUE) {
   
-  temp_env <- new.env()
-  load(data_file, envir = temp_env)
-  load(metadata_file, envir = temp_env)
-  
-  mat <- temp_env$mat
-  samp.dat <- temp_env$samp.dat
-  
-  if (!"studies" %in% colnames(samp.dat)) {
+  if (!"studies" %in% colnames(seurat_object@meta.data)) {
     stop("Missing 'studies' column in metadata.")
   }
   
-  samp.dat <- samp.dat[samp.dat$studies == "Neuromodulatory_Noradrenergic", ]
-  mat <- mat[, colnames(mat) %in% samp.dat$sample_id]
-  
-  if (ncol(mat) != nrow(samp.dat)) {
-    stop("Counts matrix and metadata mismatch.")
-  }
+  # Study filter (was previously done on samp.dat before CreateSeuratObject)
+  seurat_object <- subset(
+    seurat_object,
+    subset = studies == "Neuromodulatory_Noradrenergic"
+  )
   
   if (verbose) {
-    message("Cells after study filter: ", ncol(mat))
+    message("Cells after study filter: ", ncol(seurat_object))
   }
   
+  # Re-create with min.cells / min.features filters and project name,
+  # mirroring the original CreateSeuratObject call
   seurat_object <- CreateSeuratObject(
-    counts = mat,
-    meta.data = samp.dat,
-    project = sample_name,
+    counts    = GetAssayData(seurat_object, assay = "RNA", layer = "counts"),
+    meta.data = seurat_object@meta.data,
+    project   = sample_name,
     min.cells = 3,
     min.features = 200
   )
@@ -49,7 +41,7 @@ load_and_create_seurat <- function(data_file, metadata_file, sample_name,
     message("Cells after CreateSeuratObject: ", ncol(seurat_object))
   }
   
-  rm(mat, samp.dat, temp_env); gc()
+  gc()
   
   seurat_object <- AddMetaData(seurat_object, metadata = sample_name, col.name = "experiment")
   seurat_object <- AddMetaData(seurat_object, metadata = "10xV4", col.name = "platform")
@@ -58,6 +50,7 @@ load_and_create_seurat <- function(data_file, metadata_file, sample_name,
   seurat_object$percent.rb <- PercentageFeatureSet(seurat_object, pattern = "^rp[sl]")
   seurat_object$percent.mt <- as.numeric(seurat_object$percent.mt)
   hist(seurat_object$percent.mt, breaks = 50, xlab = "percent.mt", col = "gray")
+  
   if (!is.null(doublet_scores_col) &&
       !doublet_scores_col %in% colnames(seurat_object@meta.data)) {
     warning(paste0("Doublet score column '", doublet_scores_col, "' not found."))
@@ -126,8 +119,8 @@ load_and_create_seurat <- function(data_file, metadata_file, sample_name,
 # Memory-optimized Hierarchical Harmony integration
 # ------------------------------------------------------------------------------
 
-integrate_samples_hierarchical <- function(seurat_object, 
-                                           file_col = "batch_vendor_name", 
+integrate_samples_hierarchical <- function(seurat_object,
+                                           file_col = "batch_vendor_name",
                                            port_well_col = "rna_amplification") {
   ## ---- Metadata cleanup ----
   md <- seurat_object@meta.data
@@ -206,7 +199,6 @@ integrate_samples_hierarchical <- function(seurat_object,
   
   return(seurat_object)
 }
-
 
 
 # ------------------------------------------------------------------------------

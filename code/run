@@ -34,33 +34,39 @@ if [[ -f .Rprofile ]]; then
 fi
 
 # Step 1: Build full Seurat object with QC and batch correction
-echo "[1/5] Building full Seurat object with Harmony batch correction..."
+echo "[1/6] Building full Seurat object with Harmony batch correction..."
 Rscript --vanilla 01_build_full_object.R
 echo "✓ Step 1 complete: LC_clustered_harmony.rds saved"
 echo ""
 
 # Step 2: Define LC population from clusters
-echo "[2/5] Defining LC-NE population from clusters..."
+echo "[2/6] Defining LC-NE population from clusters..."
 Rscript --vanilla 02_define_LC_population.R
 echo "✓ Step 2 complete: LC population identified"
 echo ""
 
 # Step 3: LC subclustering and outlier removal
-echo "[3/5] LC subclustering and outlier removal..."
+echo "[3/6] LC subclustering and outlier removal..."
 Rscript --vanilla 03_LC_subclustering.R
 echo "✓ Step 3 complete: LC cells refined"
 echo ""
 
 # Step 4: Generate publication figures
-echo "[4/5] Generating publication figures..."
+echo "[4/6] Generating publication figures..."
 Rscript --vanilla 02_b_publication_fig.R
 echo "✓ Step 4 complete: Figures saved to /results/figures"
 echo ""
 
 # Step 5: Export to h5ad format for Python analysis
-echo "[5/5] Exporting LC subset to h5ad format..."
+echo "[5/6] Exporting LC subset to h5ad format..."
 Rscript --vanilla 04_export_LC_to_h5ad.R
 echo "✓ Step 5 complete: H5AD file saved"
+echo ""
+
+# Step 6: Retro-seq conversion
+echo "[6/6] Running retro-seq conversion..."
+Rscript --vanilla 05_retroseeq_convert.R
+echo "✓ Step 6 complete: Retro-seq conversion done"
 echo ""
 
 # Restore .Rprofile for Cloud Workstation compatibility
