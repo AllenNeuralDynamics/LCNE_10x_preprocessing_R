@@ -1,9 +1,7 @@
-install.packages("anndata")
+
 rm(list = ls())
 # file_loc <- "../data/LCv2/10xV4_Neuromodulatory_Noradrenergic_complete_RTX-4134_mat_241111.rda"
 # metafile_loc <- "../data/LCv2/10xV4_Neuromodulatory_Noradrenergic_complete_RTX-4134_CR8_samp.dat_241111.rda"
-
-
 
 library(Seurat)
 library(harmony)
