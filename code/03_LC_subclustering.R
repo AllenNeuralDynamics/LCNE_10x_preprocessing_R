@@ -15,12 +15,12 @@ combined_lc <- readRDS(input_file)
 combined_lc <- NormalizeData(combined_lc)
 combined_lc <- FindVariableFeatures(combined_lc, nfeatures = 2000)
 combined_lc <- ScaleData(combined_lc)
-
+set.seed(42) 
 combined_lc <- RunPCA(combined_lc, npcs = 30)
 combined_lc <- RunUMAP(combined_lc, dims = 1:10, return.model = TRUE)
 
 combined_lc <- FindNeighbors(combined_lc, dims = 1:10)
-combined_lc <- FindClusters(combined_lc, resolution = 0.4)
+combined_lc <- FindClusters(combined_lc, resolution = 0.4,random.seed = 42)
 
 
 
