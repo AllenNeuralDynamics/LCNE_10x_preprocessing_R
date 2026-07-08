@@ -53,19 +53,19 @@ echo ""
 
 # Step 4: Generate publication figures
 echo "[4/6] Generating publication figures..."
-Rscript --vanilla 02_b_publication_fig.R
+Rscript --vanilla 04_publication_fig.R
 echo "✓ Step 4 complete: Figures saved to /results/figures"
 echo ""
 
 # Step 5: Export to h5ad format for Python analysis
 echo "[5/6] Exporting LC subset to h5ad format..."
-Rscript --vanilla 04_export_LC_to_h5ad.R
+Rscript --vanilla 05_export_LC_to_h5ad.R
 echo "✓ Step 5 complete: H5AD file saved"
 echo ""
 
 # Step 6: Retro-seq conversion
 echo "[6/6] Running retro-seq conversion..."
-Rscript --vanilla 05_retroseq_convert.R
+Rscript --vanilla 06_retroseq_convert.R
 echo "✓ Step 6 complete: Retro-seq conversion done"
 echo ""
 

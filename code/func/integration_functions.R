@@ -57,7 +57,7 @@ load_and_create_seurat <- function(data_file, metadata_file, sample_name,
   seurat_object$percent.mt <- PercentageFeatureSet(seurat_object, pattern = "^mt-")
   seurat_object$percent.rb <- PercentageFeatureSet(seurat_object, pattern = "^rp[sl]")
   seurat_object$percent.mt <- as.numeric(seurat_object$percent.mt)
-  hist(seurat_object$percent.mt, breaks = 50, xlab = "percent.mt", col = "gray")
+  # hist(seurat_object$percent.mt, breaks = 50, xlab = "percent.mt", col = "gray")  # for diagnosis, commenting out for the publications
   if (!is.null(doublet_scores_col) &&
       !doublet_scores_col %in% colnames(seurat_object@meta.data)) {
     warning(paste0("Doublet score column '", doublet_scores_col, "' not found."))
@@ -101,7 +101,7 @@ load_and_create_seurat <- function(data_file, metadata_file, sample_name,
   seurat_object <- NormalizeData(
     seurat_object,
     normalization.method = "LogNormalize",
-    scale.factor = 10000
+    scale.factor = 10000,verbose = FALSE
   )
   
   if (verbose) {
@@ -112,7 +112,7 @@ load_and_create_seurat <- function(data_file, metadata_file, sample_name,
     seurat_object,
     selection.method = "vst",
     nfeatures = 1500,
-    assay = "RNA"
+    assay = "RNA",verbose = FALSE
   )
   
   if (verbose) {
@@ -137,18 +137,21 @@ integrate_samples_hierarchical <- function(seurat_object,
   seurat_object@meta.data <- md
   rm(md); gc()
   
+  
+  
+  set.seed(42)  
   ## ---- PCA ----
   seurat_object <- ScaleData(
     seurat_object,
     features = VariableFeatures(seurat_object),
-    assay = "RNA"
+    assay = "RNA", verbose = FALSE
   )
   
   seurat_object <- RunPCA(
     seurat_object,
     features = VariableFeatures(seurat_object),
     assay = "RNA",
-    npcs = 30
+    npcs = 30,verbose = FALSE
   )
   
   ## ---- Harmony level 1: vendor / RTX ----
@@ -158,7 +161,8 @@ integrate_samples_hierarchical <- function(seurat_object,
     reduction.use = "pca",
     dims.use = 1:30,
     assay.use = "RNA",
-    project.dim = FALSE
+    project.dim = FALSE,
+    verbose = FALSE
   )
   seurat_object@reductions$harmony_batch1 <- seurat_object@reductions$harmony
   
@@ -171,7 +175,8 @@ integrate_samples_hierarchical <- function(seurat_object,
     object = seurat_object,
     group.by.vars = "batch",
     reduction.use = "harmony_batch1",
-    dims.use = 1:30
+    dims.use = 1:30,
+    verbose = FALSE
   )
   seurat_object@reductions$harmony_batch2 <- seurat_object@reductions$harmony
   
@@ -180,7 +185,8 @@ integrate_samples_hierarchical <- function(seurat_object,
     object = seurat_object,
     group.by.vars = port_well_col,
     reduction.use = "harmony_batch2",
-    dims.use = 1:30
+    dims.use = 1:30,
+    verbose = FALSE
   )
   seurat_object@reductions$harmony_final <- seurat_object@reductions$harmony
   gc()
@@ -189,19 +195,22 @@ integrate_samples_hierarchical <- function(seurat_object,
   seurat_object <- RunUMAP(
     seurat_object,
     reduction = "harmony_final",
-    dims = 1:30
+    dims = 1:30,
+    verbose = FALSE
   )
   
   seurat_object <- FindNeighbors(
     seurat_object,
     reduction = "harmony_final",
-    dims = 1:30
+    dims = 1:30,
+    verbose = FALSE
   )
   
   seurat_object <- FindClusters(
     seurat_object,
     resolution = 0.5,
-    random.seed = 42
+    random.seed = 42,
+    verbose = FALSE
   )
   
   return(seurat_object)

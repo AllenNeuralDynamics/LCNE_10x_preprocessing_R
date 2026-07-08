@@ -107,8 +107,8 @@ combined_lc$cluster_badcluster_vs_other <- ifelse(
 combined_lc_filtered <- subset(combined_lc, idents = setdiff(levels(Idents(combined_lc)), bad_subclusters))
 
 
-message("Cells before filtering: ", ncol(combined_lc)) # 5151
-message("Cells after QC filtering: ", ncol(combined_lc_filtered)) # 4868
+message("Cells before filtering: ", ncol(combined_lc)) # 4984
+message("Cells after QC filtering: ", ncol(combined_lc_filtered)) # 4768
 
 saveRDS(combined_lc_filtered, output_file)
 
