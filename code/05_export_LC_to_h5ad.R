@@ -18,4 +18,5 @@ seurat_obj <- SeuratObject::UpdateSeuratObject(seurat_obj)
 
 
 sce <- as.SingleCellExperiment(seurat_obj) # seurat function 
+dir.create('../results/processed_data/', showWarnings = FALSE)
 writeH5AD(sce, outputfile) #zellkonverter function 

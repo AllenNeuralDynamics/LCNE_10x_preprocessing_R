@@ -84,7 +84,8 @@ p_umap_clusters <- DimPlot(
 ) + NoLegend() + coord_fixed() + labs(title = "UMAP of Clusters", x = "UMAP 1", y = "UMAP 2")
 p_umap_clusters
 
-save_pub(p_umap_clusters, "umap_clusters", w = 4.2, h = 4.0)
+# save_pub(p_umap_clusters, "umap_clusters", w = 4.2, h = 4.0)
+save_pub(p_umap_clusters, "fig_S8d", w = 4.2, h = 4.0)
 
 
 
@@ -110,8 +111,12 @@ p_features <- FeaturePlot(
 
 p_features
 
+# 
+# save_pub(p_features, "umap_fedatureplots_lc_markers",
+#          w = 3.9 * 3, h = 3.3 * ceiling(length(lc_markers) / 3),
+#          source_data = cbind(Embeddings(combined, "umap")[, 1:2], FetchData(combined, vars = lc_markers[1:4])))
 
-save_pub(p_features, "umap_fedatureplots_lc_markers",
+save_pub(p_features, "fig_S8c",
          w = 3.9 * 3, h = 3.3 * ceiling(length(lc_markers) / 3),
          source_data = cbind(Embeddings(combined, "umap")[, 1:2], FetchData(combined, vars = lc_markers[1:4])))
 
@@ -140,9 +145,15 @@ p_dot
 
 n_clusters <- length(levels(factor(combined$seurat_clusters)))
 
+# save_pub(
+#   p_dot,
+#   "dotplot_lc_markers",
+#   w = 6.5,
+#   h = max(3.5, 0.18 * n_clusters + 2.0)
+# )
 save_pub(
   p_dot,
-  "dotplot_lc_markers",
+  "fig_S8b",
   w = 6.5,
   h = max(3.5, 0.18 * n_clusters + 2.0)
 )

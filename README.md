@@ -1,8 +1,10 @@
-# LCNE 10x snRNA-seq Preprocessing Pipeline
+# LCNE 10x snRNA-seq AND retroseq (smarstseq) Preprocessing Pipeline
 
 **Locus Coeruleus Norepinephrine (LC-NE) Cell Identification and Analysis**
 
 This capsule performs sequential preprocessing of 10x Genomics single-nucleus RNA-seq data to identify, filter, and characterize locus coeruleus norepinephrine (LC-NE) neurons using Seurat 5 and Harmony batch correction. The pipeline also includes retro-seq data conversion for cross-modality integration.
+
+**note the entire pipeline runs >1 hours**
 
 ## Overview
 
@@ -18,7 +20,11 @@ The pipeline implements a multi-stage workflow:
 
 ### Downloading the Data
 
-Before running this capsule, you will need to download the required datasets and attach them as data assets.
+Before running this capsule, you will need to download the required datasets and attach them as data assets, From NEMO!
+
+**snRNAseq data:**
+> Download link: *(to be filled)*
+
 
 **Retro-seq data:**
 > Download link: *(to be filled)*
@@ -210,6 +216,19 @@ If using this preprocessing pipeline, please cite:
 - Harmony: Korsunsky et al., Nature Methods 2019
 - SeuratDisk/zellkonverter: For h5ad conversion
 
+```
+@article{xxxx,
+  title   = {Topographic structure and function of locus coeruleus
+norepinephrine neurons},
+  author  = {Zhixiao Su},
+  journal = {xxx},
+  volume  = {xx},
+  number  = {xx},
+  pages   = {xxx},
+  year    = {xxx},
+  publisher = {xxx}
+}
+```
 ## Contact
 
 For questions or issues, please open an issue on the [GitHub repository](https://github.com/AllenNeuralDynamics/LCNE_10x_preprocessing_R).
