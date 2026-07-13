@@ -94,9 +94,9 @@ save_pub(p_umap_clusters, "fig_S8d", w = 4.2, h = 4.0)
 # =========================
 p_features <- FeaturePlot(
   combined,
-  features = lc_markers[1:4],
+  features = lc_markers,
   reduction = "umap",
-  ncol = 2,
+  ncol = 3,
   pt.size = 1,
   min.cutoff = "q5",
   max.cutoff = "q95",
@@ -118,7 +118,7 @@ p_features
 
 save_pub(p_features, "fig_S8c",
          w = 3.9 * 3, h = 3.3 * ceiling(length(lc_markers) / 3),
-         source_data = cbind(Embeddings(combined, "umap")[, 1:2], FetchData(combined, vars = lc_markers[1:4])))
+         source_data = cbind(Embeddings(combined, "umap")[, 1:2], FetchData(combined, vars = lc_markers)))
 
 
 
@@ -133,7 +133,7 @@ save_pub(p_features, "fig_S8c",
 p_dot <- DotPlot(
   combined,
   scale = FALSE,   # this is new but i think this makes more sense. 
-  features = lc_markers[1:4],
+  features = lc_markers,
   group.by = "seurat_clusters"
 ) +
   RotatedAxis() +
