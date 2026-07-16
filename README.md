@@ -50,8 +50,8 @@ Expected file structure:
 
 **Steps:**
 - Load raw 10x data from both data assets
-- Quality control filtering (gene counts, mitochondrial %, ribosomal %)
-- SCTransform normalization
+- Quality control filtering (detected gene counts, mitochondrial %, ribosomal %, doublet scores)
+- Counts-per-10k (CP10k) normalization followed by log-normalization
 - Harmony batch correction across samples
 - Initial dimensionality reduction (PCA, UMAP)
 - Preliminary clustering
@@ -63,7 +63,7 @@ Expected file structure:
 
 **Steps:**
 - Load batch-corrected Seurat object
-- Screen clusters for LC-NE markers (Dbh, Th, Slc6a2)
+- Screen clusters for LC-NE markers (Dbh, Th, Slc6a2, Slc18a2)
 - Filter cells expressing canonical LC-NE markers
 - Subset to LC-enriched clusters
 
@@ -115,20 +115,23 @@ Expected file structure:
 
 **Quality Control:**
 ```r
-min_genes <- 200          # Minimum genes per cell
-max_genes <- 5000         # Maximum genes per cell
-max_mt_pct <- 10          # Max mitochondrial % (excludes >10%)
-max_rb_pct <- 50          # Max ribosomal %
+min_genes    <- 2000      # Minimum detected genes per nucleus
+max_genes    <- 15000     # Maximum detected genes per nucleus
+max_mt_pct   <- 4         # Max mitochondrial % (excludes >4%)
+max_rb_pct   <- 4         # Max ribosomal % (excludes >4%)
+max_doublet  <- 0.4       # Remove cells with doublet score >= 0.4
+min_cells    <- 3         # Remove genes detected in < 3 cells
 ```
 
 **LC-NE Marker Genes:**
 - **Dbh** (Dopamine β-hydroxylase)
 - **Th** (Tyrosine hydroxylase)
 - **Slc6a2** (Norepinephrine transporter)
+- **Slc18a2** (Vesicular monoamine transporter 2, VMAT2)
 
 **Normalization:**
-- Method: SCTransform (Seurat v5)
-- Variable features: 3,000 genes
+- Method: Counts-per-10k (CP10k) normalization followed by log-normalization
+- Variable features: 2,000 genes (LC subset; note the Python/scVI transcriptomic step uses 1,500 HVGs)
 
 **Batch Correction:**
 - Algorithm: Harmony
@@ -139,7 +142,7 @@ max_rb_pct <- 50          # Max ribosomal %
 **R Version:** 4.4.2
 
 **Key Dependencies:**
-- Seurat 5.x
+- Seurat 5.x (v5.4.0; SeuratObject v5.3.0)
 - harmony
 - tidyverse (dplyr, ggplot2)
 - SeuratDisk or zellkonverter (for h5ad export)
@@ -192,18 +195,18 @@ source("code/05_retroseeq_convert.r")
 
 - **Memory Management:** The full dataset is processed in step 1; subsequent steps work on LC subset (~5-10% of cells)
 - **Batch Effects:** Harmony correction assumes sample-level batch effects; adjust `group.by.vars` if needed
-- **Marker Filtering:** LC-NE identification is stringent; adjust thresholds if yield is too low/high
+- **Marker Filtering:** LC-NE identification is stringent (clusters retained require >1 log CP10k expression for all markers); adjust thresholds if yield is too low/high
 - **renv:** Package environment managed via `renv.lock` (auto-disabled for reproducible runs)
 
 ## Troubleshooting
 
 **Low LC-NE Cell Yield:**
 - Check marker gene expression thresholds in `02_define_LC_population.R`
-- Verify marker genes are present in dataset (`Dbh`, `Th`, `Slc6a2`)
+- Verify marker genes are present in dataset (`Dbh`, `Th`, `Slc6a2`, `Slc18a2`)
 
 **Memory Errors:**
 - Increase compute instance size
-- Reduce number of variable features in SCTransform
+- Reduce number of variable features used for PCA
 
 **Harmony Convergence Issues:**
 - Reduce `max.iter.harmony` parameter

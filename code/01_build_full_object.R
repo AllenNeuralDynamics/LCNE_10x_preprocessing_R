@@ -10,7 +10,11 @@ library(ggplot2)
 source("./func/integration_functions.R")
 
 mysample <- load_and_create_seurat(file_loc,  metafile_loc, "Sample3", doublet_scores_col = "doublet_score")    
-# 398912 -> 231500 (after QC)
+# Cells after study filter: 398912
+# Cells after CreateSeuratObject: 398912
+# Cells after QC filtering: 231500 (removed 167412)
+# Cells after normalization: 231500
+# Cells after HVG selection: 231500
 combined <- integrate_samples_hierarchical(mysample)
 
 ### Number of communities: 63

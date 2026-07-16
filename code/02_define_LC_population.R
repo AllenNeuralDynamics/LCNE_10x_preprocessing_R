@@ -17,8 +17,8 @@ Idents(combined) <- "seurat_clusters"
 
 # here we add the filteirng for this cluster 
 
-lc_candidate_clusters <- get_candidate_clusters(combined, lc_markers[1:3])
-combined_lc <- subset(combined, idents = lc_candidate_clusters) # 5151 cells 
-dim(combined_lc)  ## 4984
+lc_candidate_clusters <- get_candidate_clusters(combined, lc_markers[1:4])
+combined_lc <- subset(combined, idents = lc_candidate_clusters) 
+dim(combined_lc)  # 4984
 dim(combined)  ## 231500
 saveRDS(combined_lc, file = output_file)
