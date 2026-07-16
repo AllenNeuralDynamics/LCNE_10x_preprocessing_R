@@ -6,10 +6,6 @@
 			"mount": "LCNE_smartseq_raw_NeMO"
 		},
 		{
-			"id": "784a0ced-f6cc-4904-9619-4e223aec631d",
-			"mount": "LCNE_10x"
-		},
-		{
 			"id": "7a2359b8-fe43-4d03-9020-87d13f35f79a",
 			"mount": "LCv2"
 		}

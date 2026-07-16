@@ -5,15 +5,10 @@ set -euo pipefail
 # Sequential execution of R scripts for LC-NE cell identification and analysis
 
 echo "=== LCNE 10x Preprocessing Pipeline ==="
-echo "Started at $(date)"
+echo "Started at $(date)" d
 echo ""
 
 # Validate required data assets
-if [[ ! -d "/data/LCNE_10x" ]]; then
-  echo "ERROR: Required data asset 'LCNE_10x' not found at /data/LCNE_10x" >&2
-  exit 1
-fi
-
 if [[ ! -d "/data/LCv2" ]]; then
   echo "ERROR: Required data asset 'LCv2' not found at /data/LCv2" >&2
   exit 1

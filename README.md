@@ -35,11 +35,12 @@ Once downloaded, attach each dataset to this capsule via **Capsule Settings → 
 
 The pipeline requires two attached data assets:
 
-- **LCNE_10x** (`/data/LCNE_10x/`): Primary 10x snRNA-seq count matrices
-- **LCv2** (`/data/LCv2/`): Secondary dataset for integration
+- **LCv2** (`/data/LCv2/`): Primary 10x snRNA-seq count matrices
+- **LCNE_smartseq_raw_NeMO** (`/data/LCNE_smartseq_raw_NeMO/`): Primary smartseq (retro-seq) snRNA-seq count matrices
+
 
 Expected file structure:
-- Raw count matrices (`.h5`, `.mtx`, or Seurat objects)
+- Raw count matrices (RData files)
 - Cell metadata including sample identifiers and QC metrics
 
 ## Pipeline Workflow
@@ -49,10 +50,10 @@ Expected file structure:
 **Purpose:** Initial QC and batch correction of the full dataset
 
 **Steps:**
-- Load raw 10x data from both data assets
+- Load raw 10x data from data assets
 - Quality control filtering (detected gene counts, mitochondrial %, ribosomal %, doublet scores)
 - Counts-per-10k (CP10k) normalization followed by log-normalization
-- Harmony batch correction across samples
+- 3 levels of hierarchical Harmony: batch_vendor_name → batch → rna_amplification
 - Initial dimensionality reduction (PCA, UMAP)
 - Preliminary clustering
 
@@ -75,33 +76,32 @@ Expected file structure:
 **Steps:**
 - Re-cluster LC-NE subset at higher resolution
 - Identify and remove technical outliers/doublets
-- Differential expression analysis within LC subtypes
 - Final QC and validation
 
 **Output:** Refined LC-NE Seurat object
 
-### Script 4: Publication Figures (`02_b_publication_fig.R`)
+### Script 4: Publication Figures (`04_publication_fig.R`)
 **Purpose:** Generate publication-quality visualizations
 
 **Figures produced:**
-- UMAP plots colored by cluster, sample, and marker expression
-- Violin plots of key LC-NE markers
+- UMAP plots colored by cluster
+- Dot plots of key LC-NE markers
 - Cluster composition and proportion plots
 - Quality control metrics
 
 **Output:** Figures saved to `/results/figures/`
 
-### Script 5: Export to h5ad (`04_export_LC_to_h5ad.R`)
+### Script 5: Export to h5ad (`05_export_LC_to_h5ad.R`)
 **Purpose:** Convert LC subset to AnnData format
 
 **Steps:**
 - Extract LC-NE cells from Seurat object
-- Convert to h5ad using SeuratDisk or zellkonverter
+- Convert to h5ad using zellkonverter
 - Preserve metadata and embeddings
 
-**Output:** `LC_subset.h5ad` for scanpy/Python analysis
+**Output:** `snRNAseq_LCNE.h5ad` saved to `/results/processed_data/.` for scanpy/Python analysis
 
-### Script 6: Retro-seq Conversion (`05_retroseeq_convert.r`)
+### Script 6: Retro-seq Conversion (`06_retroseeq_convert.r`)
 **Purpose:** Convert and integrate retro-seq data for cross-modality analysis
 
 **Steps:**
@@ -131,7 +131,7 @@ min_cells    <- 3         # Remove genes detected in < 3 cells
 
 **Normalization:**
 - Method: Counts-per-10k (CP10k) normalization followed by log-normalization
-- Variable features: 2,000 genes (LC subset; note the Python/scVI transcriptomic step uses 1,500 HVGs)
+- Variable features: 2000 genes (LC subset; note the Python/scVI transcriptomic step uses 1500 HVGs)
 
 **Batch Correction:**
 - Algorithm: Harmony
@@ -220,16 +220,14 @@ If using this preprocessing pipeline, please cite:
 - SeuratDisk/zellkonverter: For h5ad conversion
 
 ```
-@article{xxxx,
-  title   = {Topographic structure and function of locus coeruleus
-norepinephrine neurons},
-  author  = {Zhixiao Su},
-  journal = {xxx},
-  volume  = {xx},
-  number  = {xx},
-  pages   = {xxx},
-  year    = {xxx},
-  publisher = {xxx}
+@article{su2026topographic,
+  title     = {Topographic structure and function of locus coeruleus norepinephrine neurons},
+  author    = {Su, Zhixiao and Kosillo, Polina and Jung, Kanghoon and Chen, Shuonan and Summers, Mathew T. and Piet, Alex and Hou, Han and Hagihara, Kenta M. and Friedmann, Drew and Ho-Shing, Olivia and Becker, Matthew I. and Chartrand, Thomas and Grotz, Peter and Hilton-VanOsdall, Ella and Lee, Margaret and Javeri, Rajvi and Tuggle, Samantha L. and Ouellette, Naveen and Myers, Holly and Laiton, Camilo and Wulf, Kaelin and Rohde, John and Buccino, Alessio P. and Arshadi, Cameron and Wang, Di and Seshamani, Sharmishtaa and Vasquez, Sonya and Eng, Carolyn M. and Ollerenshaw, Douglas R. and Dee, Nick and Casper, Tamara and Ho, Windy and Jungert, Matthew and Jordan, Atlas and Phillips, Elliot and Chakka, Anish Bhaswanth and Nasirova, Kamiliam and Blake, Krista and McCutcheon, Audrey and Koch, Megan and Vergara, Maria Camila and Smith, Kimberly A. and Jarsky, Tim and Lusk, Nicholas and Rue, Mara C. P. and Chen, Xiaoyin and Siegle, Joshua H. and Glaser, Adam K. and Lee, Brian R. and Svoboda, Karel and Isogai, Yoh and Chandrashekar, Jayaram V. and Cohen, Jeremiah Y.},
+  journal   = {bioRxiv},
+  year      = {2026},
+  publisher = {Cold Spring Harbor Laboratory},
+  doi       = {10.64898/2026.04.10.717727},
+  url       = {https://www.biorxiv.org/content/10.64898/2026.04.10.717727v1}
 }
 ```
 ## Contact
