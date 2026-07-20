@@ -23,11 +23,17 @@ The pipeline implements a multi-stage workflow:
 Before running this capsule, you will need to download the required datasets and attach them as data assets, From NEMO!
 
 **snRNAseq data:**
-> Download link: *(to be filled)*
+> Download link:
+- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/10x_v4/house_mouse/processed/counts/
+
+- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/10x_v4/house_mouse/processed/cell_metrics/
 
 
 **Retro-seq data:**
-> Download link: *(to be filled)*
+> Download link:
+- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/SSv4/house_mouse/processed/counts/
+
+- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/SSv4/house_mouse/processed/cell_metrics
 
 Once downloaded, attach each dataset to this capsule via **Capsule Settings → Data Assets → Add Data Asset**, and ensure the mount names match those listed in the section below.
 
