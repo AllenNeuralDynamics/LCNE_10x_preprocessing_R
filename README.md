@@ -18,36 +18,10 @@ The pipeline implements a multi-stage workflow:
 
 ## Input Data
 
-### Downloading the Data
+For dataset information, see the NEMO collection landing pages https://assets.nemoarchive.org/collection/nemo:col-qocsrc5 and https://assets.nemoarchive.org/collection/nemo:col-afgz110.
 
-Before running this capsule, you will need to download the required datasets and attach them as data assets, From NEMO!
-
-**snRNAseq data:**
-> Download link:
-- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/10x_v4/house_mouse/processed/counts/
-
-- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/10x_v4/house_mouse/processed/cell_metrics/
-
-
-**Retro-seq data:**
-> Download link:
-- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/SSv4/house_mouse/processed/counts/
-
-- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/SSv4/house_mouse/processed/cell_metrics
-
-Once downloaded, attach each dataset to this capsule via **Capsule Settings → Data Assets → Add Data Asset**, and ensure the mount names match those listed in the section below.
-
-### Required Data Assets
-
-The pipeline requires two attached data assets:
-
-- **LCv2** (`/data/LCv2/`): Primary 10x snRNA-seq count matrices
-- **LCNE_smartseq_raw_NeMO** (`/data/LCNE_smartseq_raw_NeMO/`): Primary smartseq (retro-seq) snRNA-seq count matrices
-
-
-Expected file structure:
-- Raw count matrices (RData files)
-- Cell metadata including sample identifiers and QC metrics
+If they are not already available, the run script downloads `.rda` and `.rdata` files from the NEMO 10x v4 and SSv4 counts and cell-metrics directories into `../scratch/nemo_download/10x` and `../scratch/nemo_download/SS`, respectively. 
+These rdata files comprise raw count matrices and cell metadata including sample identifiers and QC metrics
 
 ## Pipeline Workflow
 
