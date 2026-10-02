@@ -9,9 +9,8 @@ echo "Started at $(date)" d
 echo ""
 
 # Validate required data assets
-if [[ ! -d "/data/LCv2" ]]; then
-  echo "ERROR: Required data asset 'LCv2' not found at /data/LCv2" >&2
-  exit 1
+if [[ ! -d "/scratch/nemo_download" ]]; then
+  bash /code/download_nemo_data.sh
 fi
 
 echo "✓ Data assets verified"

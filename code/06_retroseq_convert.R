@@ -1,6 +1,6 @@
 ### convert from RData to something python readable
 rm(list = ls())
-filepath <- '/data/LCNE_smartseq_raw_NeMO/'
+filepath <- '../scratch/nemo_download/SS/'
 filelist = list.files(filepath, pattern="")
 metafile = filelist[grep('samp.dat',filelist)]
 load(paste0(filepath, metafile))  # samp.dat2
