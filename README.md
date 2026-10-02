@@ -20,22 +20,15 @@ The pipeline implements a multi-stage workflow:
 
 ### Downloading the Data
 
-Before running this capsule, you will need to download the required datasets and attach them as data assets, From NEMO!
+For dataset information, see the [NEMO project landing page](https://assets.nemoarchive.org/grant/nemo:prj-pv9uoga) and the [NEMO collection landing page](https://assets.nemoarchive.org/collection/nemo:col-qocsrc5).
 
-**snRNAseq data:**
-> Download link:
-- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/10x_v4/house_mouse/processed/counts/
+Run the download script in an environment with `wget` and access to NEMO:
 
-- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/10x_v4/house_mouse/processed/cell_metrics/
+```bash
+bash code/download_nemo_data.sh
+```
 
-
-**Retro-seq data:**
-> Download link:
-- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/SSv4/house_mouse/processed/counts/
-
-- https://data.nemoarchive.org/bican/grant/BICAN_Neuromodulation/aibs/transcriptome/nuclei/SSv4/house_mouse/processed/cell_metrics
-
-Once downloaded, attach each dataset to this capsule via **Capsule Settings → Data Assets → Add Data Asset**, and ensure the mount names match those listed in the section below.
+The script downloads `.rda` and `.rdata` files from the NEMO 10x v4 and SSv4 counts and cell-metrics directories into `/data/LCv2/` and `/data/LCNE_smartseq_raw_NeMO/`, respectively. Set `DATA_ROOT` to use a different root directory; it defaults to `/data`.
 
 ### Required Data Assets
 
